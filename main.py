@@ -1,97 +1,14 @@
 from src.model.text_gen import TextGenerator
 from src.model.evaluate.CTRLEval import TextEvaluator
 from src.model.loop import text_gen_loop
-import pandas as pd
-import argparse
-import os
-
-def main():
-    # Thiết lập argument parser
-    parser = argparse.ArgumentParser(description='Xử lý dữ liệu CSV với LLM')
-    parser.add_argument('--input', '-i', 
-                        type=str, 
-                        required=True,
-                        help='Đường dẫn đến file CSV input (ví dụ: data/vihallu-warmup.csv)')
-    parser.add_argument('--output', '-o',
-                        type=str,
-                        default='submit.csv',
-                        help='Đường dẫn file output (mặc định: submit.csv)')
-    parser.add_argument('--encoding', '-e',
-                        type=str,
-                        default='utf-8',
-                        choices=['utf-8', 'cp1258', 'latin1', 'iso-8859-1'],
-                        help='Encoding của file CSV (mặc định: utf-8)')
-
-    args = parser.parse_args()
-    
-    # Kiểm tra file input có tồn tại không
-    if not os.path.exists(args.input):
-        print(f"❌ Lỗi: Không tìm thấy file {args.input}")
-        return
-    
-    print(f"📂 Đọc file: {args.input}")
-    print(f"🔤 Encoding: {args.encoding}")
-    print(f"💾 Output: {args.output}")
-    
-    # Đọc file CSV với encoding được chỉ định
-    try:
-        data = pd.read_csv(args.input, encoding=args.encoding)
-        print(f"✅ Đọc thành công! Kích thước: {data.shape}")
-    except UnicodeDecodeError as e:
-        print(f"❌ Lỗi encoding: {e}")
-        print("💡 Thử các encoding khác: utf-8, latin1, iso-8859-1")
-        return
-    except Exception as e:
-        print(f"❌ Lỗi đọc file: {e}")
-        return
-    
-    # Duyệt qua từng dòng để xử lý
-    results = []
-    
-    print(f"\n🚀 Bắt đầu xử lý {len(data)} dòng dữ liệu...")
-
-    for index, row in data.iterrows():
-        try:
-            # Lấy dữ liệu từ từng dòng
-            context = row['context']
-            prompt = row['prompt'] 
-            
-            print(f"📋 Đang xử lý dòng {index + 1}/{len(data)}")
-            
-            # Gọi hàm xử lý của bạn
-            response, score, retries = text_gen_loop(context, prompt)
-            
-            # Lưu kết quả
-            results.append({
-                'id': row.get('id', index),
-                'original_response': row.get('response', ''),
-                'generated_response': response,
-                'score': score,
-                'retries': retries
-            })
-            
-            print(f"   ✅ Hoàn thành - Score: {score:.3f}, Retries: {retries}")
-            
-        except Exception as e:
-            print(f"   ❌ Lỗi tại dòng {index + 1}: {str(e)[:100]}")
-            # Lưu lỗi vào kết quả
-            results.append({
-                'id': row.get('id', index),
-                'original_response': row.get('response', ''),
-                'generated_response': f"ERROR: {str(e)}",
-                'score': 0.0,
-                'retries': 0
-            })
-
-    # Chuyển kết quả thành DataFrame
-    results_df = pd.DataFrame(results)
-
-    # Save lại kết quả
-    try:
-        results_df.to_csv(args.output, index=False, encoding='utf-8')
-        print(f"\n💾 Đã lưu kết quả vào: {args.output}")
-    except Exception as e:
-        print(f"\n❌ Lỗi lưu file: {e}")
 
 if __name__ == "__main__":
-    main()
+    context = 'Theo pháp lệnh Vincennes năm 1374, vương quốc được điều hành bởi Nhiếp chính vương cho đến khi Louis lên 13 tuổi. Danh hiệu Nhiếp chính được trao cho người bà con gần nhất là ông chú của nhà vua Philippe, Quận công xứ Orleans. Louis XIV, tuy nhiên, không tín nhiệm Philippe, một người lính kiệt xuất, nhưng bị nhà vua coi là kẻ không sùng đạo. Nhà vua gọi Philippe là Fanfaron des crimes ("đầu sỏ của tội ác)" Louis XIV muốn quyền điều hành Hội đồng Nhiếp chính phải giao cho người con ngoại hôn được ông rất thương yêu, Quận công xứ Maine (con triêng của Louis XIV với Madame de Montespan). Tháng 8 năm 1714, không lâu trước khi chết, nhà vua viết di chiếu lệnh hạn chế quyền hạn của người chấp chính; theo đó quốc gia sẽ được điều hành bởi Hội đồng Nhiếp chính gồm 14 thành viên cho đến năm tân vương 13 tuổi. Philippe là cháu gọi Louis XIV là bác, làm Chủ tịch Hội đồng, nhưng còn có các thành viên khác bao gồm Quận công xứ Maine cùng các đồng minh. Quyết định của triều đình được ban xuống theo chế độ đa số phiếu, nghĩa là quyền lực Nhiếp chính vương có thể bị bác bỏ bởi nhóm Maine. Orléans nhìn ra điều đó, và ngay sau khi nhà vua qua đời, ông đến Nghị viện Paris, một Hội đồng quý tộc gồm nhiều đồng minh của ông, và Nghị viện đã hủy bỏ tờ di chiếu. Để đổi lấy sự ủng hộ của họ, Orléans cho khôi phục droit de remontrance (quyền phản đối) của Nghị viện - vốn bị Louis XIV triệt bỏ từ trước, theo đó Nghị viện có quyền phản đối những quyết định của nhà vua mà họ cho là trái với lợi ích dân tộc. Quyền phản đối làm suy yếu quyền hành của quân chủ và đánh dấu khởi đầu xung đột giữa Nhà vua và Nghị viện mà đỉnh điểm là Cách mạng Pháp năm 1789.'
+    question = 'Quyền phản đối được khôi phục bởi Orléans đã giúp cho Nghị viện có được quyền lực nào, mặc dù nhà vua luôn duy trì quyền lực tuyệt đối và không bao giờ cho phép bất kỳ sự can thiệp nào từ Nghị viện?'
+
+    print("Starting text generation loop...")
+    response, score, retries = text_gen_loop(context, question)
+    
+    print(f"Generated Response: {response}")
+    print(f"Consistency Score: {score:.4f}")
+    print(f"Number of Retries: {retries}")
