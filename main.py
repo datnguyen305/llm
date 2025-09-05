@@ -93,3 +93,6 @@ def main():
         print(f"\n💾 Đã lưu kết quả vào: {args.output}")
     except Exception as e:
         print(f"\n❌ Lỗi lưu file: {e}")
+
+if __name__ == "__main__":
+    main()
