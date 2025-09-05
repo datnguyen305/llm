@@ -11,7 +11,7 @@ class NLI:
     def predict(self, premise, hypothesis):
         # Encode dữ liệu
         inputs = self.tokenizer(premise, hypothesis, return_tensors="pt")
-
+        
         # Dự đoán
         outputs = self.model(**inputs)
         logits = outputs.logits
@@ -19,6 +19,6 @@ class NLI:
 
         # Nhãn của MNLI: 0=CONTRADICTION, 1=NEUTRAL, 2=ENTAILMENT
         labels = ["INTRINSIC", "EXTRINSIC", "NO"]
-
         pred = labels[torch.argmax(probs)]
+        print("hi")
         return pred, probs
