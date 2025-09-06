@@ -5,8 +5,8 @@ import torch
 
 class NLI: 
     def __init__(self):
-        self.tokenizer = AutoTokenizer.from_pretrained("roberta-large-mnli")
-        self.model = AutoModelForSequenceClassification.from_pretrained("roberta-large-mnli")
+        self.tokenizer = AutoTokenizer.from_pretrained("joeddav/xlm-roberta-large-xnli")
+        self.model = AutoModelForSequenceClassification.from_pretrained("joeddav/xlm-roberta-large-xnli")
 
     def predict(self, premise, hypothesis):
         # Encode dữ liệu
