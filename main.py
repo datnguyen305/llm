@@ -95,4 +95,8 @@ def main():
         print(f"\n❌ Lỗi lưu file: {e}")
 
 if __name__ == "__main__":
-    main()
+    nli = NLI()
+    premise = "Bầu trời hôm nay rất đẹp."
+    hypothesis = "Bầu trời hôm nay trong xanh."
+    pred, probs = nli.predict(premise, hypothesis)
+    print(f"NLI Prediction: {pred}, Probabilities: {probs}")

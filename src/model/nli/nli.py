@@ -20,5 +20,5 @@ class NLI:
         # Nhãn của MNLI: 0=CONTRADICTION, 1=NEUTRAL, 2=ENTAILMENT
         labels = ["INTRINSIC", "EXTRINSIC", "NO"]
         pred = labels[torch.argmax(probs)]
-        print("hi")
+        
         return pred, probs
